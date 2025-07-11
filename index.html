@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developmental Milestones Portal</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Container for Tabs */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Month Tabs */
+        .month-tabs {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap; /* Allows tabs to wrap on smaller screens */
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+            padding-bottom: 5px; /* Add some padding below tabs */
+        }
+
+        .month-tab-button {
+            background-color: #e9ecef;
+            border: none;
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #555;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-radius: 5px 5px 0 0;
+            margin: 0 2px;
+            flex-grow: 1; /* Allows tabs to grow and fill space */
+            text-align: center;
+            min-width: 100px; /* Ensure a minimum width for small tabs */
+        }
+
+        .month-tab-button:hover {
+            background-color: #d0d5da;
+            color: #333;
+        }
+
+        /* Active tab will link directly to July_flower/index.html */
+        .month-tab-button.active {
+            background-color: #007bff;
+            color: white;
+            border-bottom: 2px solid #007bff; /* Highlight active tab */
+        }
+
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #eee;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            min-height: 300px; /* Ensure content area has a decent height */
+            background-color: #fdfdfd;
+        }
+
+        .tab-pane {
+            display: none; /* Hide all tab panes by default */
+        }
+
+        .tab-pane.active {
+            display: block; /* Show active tab pane */
+        }
+
+        .welcome-section {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .welcome-section h2 {
+            font-size: 2em;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .welcome-section p {
+            font-size: 1.1em;
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            background-color: #34495e;
+            color: #ecf0f1;
+            font-size: 0.9em;
+            border-top: 1px solid #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Developmental Milestones Portal</h1>
+        <p>Navigate through the months to discover key growth stages.</p>
+    </header>
+
+    <div class="container">
+        <nav class="month-tabs">
+            <button class="month-tab-button active" onclick="openMonth(event, 'portal-home')">Home</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'january')">January</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'february')">February</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'march')">March</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'april')">April</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'may')">May</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'june')">June</button>
+            <button class="month-tab-button" onclick="window.location.href = 'July_flower/index.html';">July</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'august')">August</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'september')">September</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'october')">October</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'november')">November</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'december')">December</button>
+        </nav>
+
+        <div class="tab-content">
+            <div id="portal-home" class="tab-pane active">
+                <div class="welcome-section">
+                    <h2>Explore Developmental Stages</h2>
+                    <p>Select a month from the tabs above to learn about the unique developmental milestones achieved during that period.</p>
+                    <p>For a detailed look at July's activities and games, click on the **July** tab!</p>
+                </div>
+            </div>
+            <div id="january" class="tab-pane">
+                <h3>January Milestones</h3>
+                <p>Content for January developmental milestones will go here. You can add specific details like physical, cognitive, language, and social-emotional growth.</p>
+            </div>
+            <div id="february" class="tab-pane">
+                <h3>February Milestones</h3>
+                <p>Content for February developmental milestones...</p>
+            </div>
+            <div id="march" class="tab-pane">
+                <h3>March Milestones</h3>
+                <p>Content for March developmental milestones...</p>
+            </div>
+            <div id="april" class="tab-pane">
+                <h3>April Milestones</h3>
+                <p>Content for April developmental milestones...</p>
+            </div>
+            <div id="may" class="tab-pane">
+                <h3>May Milestones</h3>
+                <p>Content for May developmental milestones...</p>
+            </div>
+            <div id="june" class="tab-pane">
+                <h3>June Milestones</h3>
+                <p>Content for June developmental milestones...</p>
+            </div>
+            <div id="august" class="tab-pane">
+                <h3>August Milestones</h3>
+                <p>Content for August developmental milestones...</p>
+            </div>
+            <div id="september" class="tab-pane">
+                <h3>September Milestones</h3>
+                <p>Content for September developmental milestones...</p>
+            </div>
+            <div id="october" class="tab-pane">
+                <h3>October Milestones</h3>
+                <p>Content for October developmental milestones...</p>
+            </div>
+            <div id="november" class="tab-pane">
+                <h3>November Milestones</h3>
+                <p>Content for November developmental milestones...</p>
+            </div>
+            <div id="december" class="tab-pane">
+                <h3>December Milestones</h3>
+                <p>Content for December developmental milestones...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Developmental Milestones Portal. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Function to open month tabs
+        function openMonth(evt, tabId) {
+            var i, tabcontent, tablinks;
+
+            // Get all elements with class="tab-pane" and hide them
+            tabcontent = document.getElementsByClassName("tab-pane");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+
+            // Get all elements with class="month-tab-button" and remove the "active" class
+            tablinks = document.getElementsByClassName("month-tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Default open the "Home" tab on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            // Find the "Home" button and simulate a click
+            const homeButton = document.querySelector(".month-tab-button[onclick*='portal-home']");
+            if (homeButton) {
+                homeButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
