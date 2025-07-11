@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>July Flower - Developmental Milestones</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            letter-spacing: 1px;
+        }
+
+        /* Container for Tabs */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Month Tabs */
+        .month-tabs {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .month-tab-button {
+            background-color: #e9ecef;
+            border: none;
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #555;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-radius: 5px 5px 0 0;
+            margin: 0 2px;
+            flex-grow: 1; /* Allows tabs to grow and fill space */
+            text-align: center;
+        }
+
+        .month-tab-button:hover {
+            background-color: #d0d5da;
+            color: #333;
+        }
+
+        .month-tab-button.active {
+            background-color: #007bff;
+            color: white;
+            border-bottom: 2px solid #007bff; /* Highlight active tab */
+        }
+
+        /* July Sub-Tabs (initially hidden) */
+        #july-sub-tabs {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        #july-sub-tabs.show {
+            display: flex; /* Shown when July tab is active */
+            justify-content: center; /* Center the sub-tabs */
+            gap: 10px; /* Space between sub-tabs */
+            flex-wrap: wrap;
+        }
+
+        .july-sub-tab-button {
+            background-color: #6c757d;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .july-sub-tab-button:hover {
+            background-color: #5a6268;
+        }
+
+        .july-sub-tab-button.active {
+            background-color: #28a745; /* Green for active sub-tab */
+        }
+
+        /* Tab Content */
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #eee;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            min-height: 200px;
+            background-color: #fdfdfd;
+        }
+
+        .tab-pane {
+            display: none; /* Hide all tab panes by default */
+        }
+
+        .tab-pane.active {
+            display: block; /* Show active tab pane */
+        }
+
+        /* Specific styles for the "July" tab content */
+        #july-content {
+            padding: 0; /* Remove padding from general tab-content if sub-tabs handle content */
+            border: none; /* Remove border from general tab-content if sub-tabs handle content */
+            background-color: transparent;
+        }
+
+        /* Specific styles for July sub-tab content panes */
+        .july-sub-tab-pane {
+            display: none; /* Hide all sub-tab panes by default */
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 15px;
+            background-color: #fff;
+        }
+
+        .july-sub-tab-pane.active {
+            display: block; /* Show active sub-tab pane */
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            background-color: #34495e;
+            color: #ecf0f1;
+            font-size: 0.9em;
+            border-top: 1px solid #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Developmental Milestones</h1>
+        <p>Exploring growth and learning through the months</p>
+    </header>
+
+    <div class="container">
+        <nav class="month-tabs">
+            <button class="month-tab-button" onclick="openMonth(event, 'january')">January</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'february')">February</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'march')">March</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'april')">April</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'may')">May</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'june')">June</button>
+            <button class="month-tab-button active" onclick="openMonth(event, 'july')">July</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'august')">August</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'september')">September</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'october')">October</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'november')">November</button>
+            <button class="month-tab-button" onclick="openMonth(event, 'december')">December</button>
+        </nav>
+
+        <div class="tab-content">
+            <div id="january" class="tab-pane">
+                <h3>January Milestones</h3>
+                <p>Content for January developmental milestones...</p>
+            </div>
+            <div id="february" class="tab-pane">
+                <h3>February Milestones</h3>
+                <p>Content for February developmental milestones...</p>
+            </div>
+            <div id="march" class="tab-pane">
+                <h3>March Milestones</h3>
+                <p>Content for March developmental milestones...</p>
+            </div>
+            <div id="april" class="tab-pane">
+                <h3>April Milestones</h3>
+                <p>Content for April developmental milestones...</p>
+            </div>
+            <div id="may" class="tab-pane">
+                <h3>May Milestones</h3>
+                <p>Content for May developmental milestones...</p>
+            </div>
+            <div id="june" class="tab-pane">
+                <h3>June Milestones</h3>
+                <p>Content for June developmental milestones...</p>
+            </div>
+            <div id="july" class="tab-pane active">
+                <h3>July Milestones</h3>
+                <p>Discover the milestones for July across different developmental areas.</p>
+
+                <div id="july-sub-tabs" class="show">
+                    <button class="july-sub-tab-button active" onclick="openJulySubTab(event, 'physical')">1. Physical</button>
+                    <button class="july-sub-tab-button" onclick="openJulySubTab(event, 'cognitive')">2. Cognitive</button>
+                    <button class="july-sub-tab-button" onclick="openJulySubTab(event, 'language')">3. Language</button>
+                    <button class="july-sub-tab-button" onclick="openJulySubTab(event, 'social-emotional')">4. Social and Emotional</button>
+                    <button class="july-sub-tab-button" onclick="openJulySubTab(event, 'creative')">5. Creative</button>
+                </div>
+
+                <div class="july-sub-tab-content">
+                    <div id="physical" class="july-sub-tab-pane active">
+                        <h4>Physical Development</h4>
+                        <p>Information about physical milestones for July.</p>
+                        <ul>
+                            <li>Gross Motor Skills: e.g., sitting up unassisted, crawling attempts.</li>
+                            <li>Fine Motor Skills: e.g., grasping objects, transferring toys hand to hand.</li>
+                        </ul>
+                    </div>
+                    <div id="cognitive" class="july-sub-tab-pane">
+                        <h4>Cognitive Development</h4>
+                        <p>Information about cognitive milestones for July.</p>
+                        <p>Click <a href="size.html" target="_blank">here</a> to open `size.html` for more details.</p>
+                        <ul>
+                            <li>Problem Solving: e.g., finding partially hidden objects.</li>
+                            <li>Object Permanence: e.g., understanding objects exist even when out of sight.</li>
+                        </ul>
+                    </div>
+                    <div id="language" class="july-sub-tab-pane">
+                        <h4>Language Development</h4>
+                        <p>Information about language milestones for July.</p>
+                        <ul>
+                            <li>Communication: e.g., babbling, responding to own name.</li>
+                            <li>Understanding: e.g., recognizing familiar words.</li>
+                        </ul>
+                    </div>
+                    <div id="social-emotional" class="july-sub-tab-pane">
+                        <h4>Social and Emotional Development</h4>
+                        <p>Information about social and emotional milestones for July.</p>
+                        <ul>
+                            <li>Social Interaction: e.g., smiling at familiar faces, showing excitement.</li>
+                            <li>Emotional Expression: e.g., expressing joy, curiosity.</li>
+                        </ul>
+                    </div>
+                    <div id="creative" class="july-sub-tab-pane">
+                        <h4>Creative Development</h4>
+                        <p>Information about creative milestones for July.</p>
+                        <ul>
+                            <li>Exploration: e.g., exploring textures and sounds.</li>
+                            <li>Play: e.g., simple pretend play, interacting with toys in new ways.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="august" class="tab-pane">
+                <h3>August Milestones</h3>
+                <p>Content for August developmental milestones...</p>
+            </div>
+            <div id="september" class="tab-pane">
+                <h3>September Milestones</h3>
+                <p>Content for September developmental milestones...</p>
+            </div>
+            <div id="october" class="tab-pane">
+                <h3>October Milestones</h3>
+                <p>Content for October developmental milestones...</p>
+            </div>
+            <div id="november" class="tab-pane">
+                <h3>November Milestones</h3>
+                <p>Content for November developmental milestones...</p>
+            </div>
+            <div id="december" class="tab-pane">
+                <h3>December Milestones</h3>
+                <p>Content for December developmental milestones...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 July Flower Project. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Function to open month tabs
+        function openMonth(evt, monthName) {
+            var i, tabcontent, tablinks;
+
+            // Get all elements with class="tab-pane" and hide them
+            tabcontent = document.getElementsByClassName("tab-pane");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+
+            // Get all elements with class="month-tab-button" and remove the "active" class
+            tablinks = document.getElementsByClassName("month-tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(monthName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+
+            // Handle visibility of July sub-tabs
+            const julySubTabs = document.getElementById('july-sub-tabs');
+            if (monthName === 'july') {
+                julySubTabs.classList.add('show');
+                // Open the 'physical' sub-tab by default when July is selected
+                openJulySubTab(null, 'physical'); // Passing null for event as it's a programmatic click
+            } else {
+                julySubTabs.classList.remove('show');
+            }
+        }
+
+        // Function to open July sub-tabs
+        function openJulySubTab(evt, subTabName) {
+            var i, subTabContent, subTabLinks;
+
+            // Get all elements with class="july-sub-tab-pane" and hide them
+            subTabContent = document.getElementsByClassName("july-sub-tab-pane");
+            for (i = 0; i < subTabContent.length; i++) {
+                subTabContent[i].classList.remove("active");
+            }
+
+            // Get all elements with class="july-sub-tab-button" and remove the "active" class
+            subTabLinks = document.getElementsByClassName("july-sub-tab-button");
+            for (i = 0; i < subTabLinks.length; i++) {
+                subTabLinks[i].classList.remove("active");
+            }
+
+            // Show the current sub-tab, and add an "active" class to the button that opened the sub-tab
+            document.getElementById(subTabName).classList.add("active");
+            if (evt) { // Check if evt is not null (for initial load, evt will be null)
+                evt.currentTarget.classList.add("active");
+            }
+        }
+
+        // Default open the July month tab and its first sub-tab on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            // Simulate click on the July tab to activate it and show its sub-tabs
+            document.querySelector(".month-tab-button[onclick*='july']").click();
+        });
+    </script>
+</body>
+</html>
