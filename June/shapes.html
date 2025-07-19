@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>வடிவங்கள் பொருத்தும் விளையாட்டு!</title>
+    <style>
+        :root {
+            --primary-color: #8a2be2; /* BlueViolet */
+            --secondary-color: #6a5acd; /* SlateBlue */
+            --background-light: #f7e6ff; /* Light lavender */
+            --text-dark: #4a007f; /* Dark purple */
+            --accent-gold: #ffcc00; /* Gold (default for squares) */
+            --accent-tomato: #ff6347; /* Tomato */
+            --accent-lime: #32cd32; /* LimeGreen */
+            --accent-orange: #ffa500; /* Orange */
+            --accent-orangered: #ff4500; /* OrangeRed */
+            --accent-teal: #008080; /* Teal for Oval */
+            --border-light: #b0c4de; /* LightSteelBlue */
+            --hover-light: #e0ffff; /* LightCyan */
+            --steel-blue: #4682b4; /* SteelBlue */
+            --info-blue: #17a2b8; /* Info Blue */
+            --info-blue-dark: #138496;
+            --success-green: #28a745;
+            --error-red: #dc3545;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--background-light);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--text-dark);
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-container {
+            background-color: #fff;
+            border-radius: 25px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            width: 90%;
+            max-width: 900px;
+            box-sizing: border-box;
+        }
+
+        .instructions {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--secondary-color);
+        }
+
+        .shape-drag-container, .target-area-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Reduced gap for smaller screens */
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .draggable-shape, .target-area {
+            width: 90px; /* Base size */
+            height: 90px; /* Base size */
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            position: relative;
+            flex-shrink: 0; /* Prevent shrinking on small screens */
+        }
+
+        .draggable-shape {
+            background-color: var(--accent-gold); /* Default for square */
+            cursor: grab;
+        }
+
+        .draggable-shape:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+
+        .draggable-shape.dragging {
+            opacity: 0.5;
+            transform: scale(0.9);
+        }
+
+        .target-area {
+            border: 3px dashed var(--border-light);
+            background-color: #fff;
+            box-shadow: none; /* No initial shadow for targets */
+            overflow: hidden; /* Hide overflow for shapes like triangle when dropped */
+        }
+
+        .target-area.hovered {
+            background-color: var(--hover-light);
+            border-color: var(--steel-blue);
+            transform: scale(1.02);
+        }
+
+        .target-area.matched {
+            border-color: var(--success-green);
+            background-color: rgba(40, 167, 69, 0.1); /* Light green tint */
+        }
+
+        /* Shape specific styles for draggable shapes */
+        .shape-circle {
+            border-radius: 50%;
+        }
+        .shape-triangle {
+            width: 0;
+            height: 0;
+            border-left: 45px solid transparent; /* 90px / 2 */
+            border-right: 45px solid transparent;
+            border-bottom: 90px solid; /* Color set by JS */
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none; /* Triangle itself creates the shape */
+        }
+        .shape-rectangle {
+            width: 110px; /* Wider for rectangle */
+            height: 70px; /* Shorter for rectangle */
+            border-radius: 8px;
+        }
+        .shape-oval {
+            width: 100px; /* Wider than height for oval */
+            height: 70px;
+            border-radius: 50%; /* Makes it an oval */
+        }
+
+        /* Outline specific styles for target areas */
+        .outline-circle {
+            border-radius: 50%;
+        }
+        .outline-triangle {
+            width: 0;
+            height: 0;
+            border-left: 48px dashed transparent; /* Slightly larger outline */
+            border-right: 48px dashed transparent;
+            border-bottom: 96px dashed var(--border-light);
+            background-color: transparent;
+            border: none; /* Remove default border */
+        }
+        .outline-rectangle {
+            width: 116px; /* Slightly larger outline */
+            height: 76px;
+            border-radius: 8px;
+            border: 3px dashed var(--border-light);
+        }
+        .outline-oval {
+            width: 106px; /* Slightly larger outline */
+            height: 76px;
+            border-radius: 50%;
+            border: 3px dashed var(--border-light);
+        }
+
+
+        .feedback-message {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .feedback-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .feedback-message.correct {
+            color: var(--success-green);
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+        .feedback-message.incorrect {
+            color: var(--error-red);
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        .action-button { /* Renamed class for general use */
+            background-color: var(--info-blue);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            font-size: 1.4em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .action-button:hover {
+            background-color: var(--info-blue-dark);
+            transform: translateY(-3px);
+        }
+        .action-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Removed round-info styling as it's no longer needed */
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .game-container {
+                padding: 20px;
+                gap: 20px;
+            }
+            .instructions {
+                font-size: 1.1em;
+            }
+            .draggable-shape, .target-area {
+                width: 75px; /* Even smaller for mobile landscape */
+                height: 75px;
+            }
+            .shape-triangle {
+                border-left: 37.5px solid transparent;
+                border-right: 37.5px solid transparent;
+                border-bottom: 75px solid;
+            }
+            .outline-triangle {
+                border-left: 40px dashed transparent;
+                border-right: 40px dashed transparent;
+                border-bottom: 80px dashed var(--border-light);
+            }
+            .shape-rectangle {
+                width: 90px;
+                height: 60px;
+            }
+            .outline-rectangle {
+                width: 96px;
+                height: 66px;
+            }
+            .shape-oval {
+                width: 85px;
+                height: 60px;
+            }
+            .outline-oval {
+                width: 91px;
+                height: 66px;
+            }
+            .feedback-message {
+                font-size: 1.2em;
+            }
+            .action-button { /* Renamed class */
+                font-size: 1.2em;
+                padding: 12px 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            .instructions {
+                font-size: 1em;
+            }
+            .game-container {
+                padding: 15px;
+                gap: 15px;
+            }
+            .draggable-shape, .target-area {
+                width: 60px; /* Smallest for small phones */
+                height: 60px;
+            }
+            .shape-triangle {
+                border-left: 30px solid transparent;
+                border-right: 30px solid transparent;
+                border-bottom: 60px solid;
+            }
+            .outline-triangle {
+                border-left: 32px dashed transparent;
+                border-right: 32px dashed transparent;
+                border-bottom: 64px dashed var(--border-light);
+            }
+            .shape-rectangle {
+                width: 75px;
+                height: 50px;
+            }
+            .outline-rectangle {
+                width: 81px;
+                height: 56px;
+            }
+            .shape-oval {
+                width: 70px;
+                height: 50px;
+            }
+            .outline-oval {
+                width: 76px;
+                height: 56px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>வடிவங்கள் பொருத்தும் விளையாட்டு!</h1>
+    <p class="instructions">ஒவ்வொரு வடிவத்தையும் அதன் சரியான அவுட்லைன் (வெளிக்கோடு) உள்ள இடத்திற்கு இழுத்துச் செல்லவும்!</p>
+
+    <div class="game-container">
+        <div class="shape-drag-container" id="draggableShapesContainer">
+            </div>
+
+        <div class="target-area-container" id="targetAreasContainer">
+            </div>
+
+        <p class="feedback-message" id="feedbackMessage"></p>
+        <button class="action-button" id="actionButton"></button>
+    </div>
+
+    <script>
+        // Updated shapes array with 'Oval' and specific colors
+        const shapes = [
+            { name: 'Circle', tamilName: 'வட்டம்', class: 'circle', color: 'var(--accent-tomato)' },
+            { name: 'Square', tamilName: 'சதுரம்', class: 'square', color: 'var(--secondary-color)' },
+            { name: 'Triangle', tamilName: 'முக்கோணம்', class: 'triangle', color: 'var(--accent-lime)' },
+            { name: 'Rectangle', tamilName: 'செவ்வகம்', class: 'rectangle', color: 'var(--accent-orange)' },
+            { name: 'Oval', tamilName: 'நீள்வட்டம்', class: 'oval', color: 'var(--accent-teal)' } // Added Oval
+        ];
+
+        // Removed MAX_ROUNDS constant
+        // Removed currentRound variable
+
+        const draggableShapesContainer = document.getElementById('draggableShapesContainer');
+        const targetAreasContainer = document.getElementById('targetAreasContainer');
+        const feedbackMessage = document.getElementById('feedbackMessage');
+        const actionButton = document.getElementById('actionButton'); // Renamed from playAgainButton
+        // Removed roundInfo as it's no longer in HTML
+
+        let draggedItem = null;
+        let matchedCount = 0;
+
+        // --- Utility Functions ---
+
+        /**
+         * Shuffles an array in place (Fisher-Yates algorithm).
+         * @param {Array} array The array to shuffle.
+         * @returns {Array} The shuffled array.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        /**
+         * Creates an HTML div element for a shape, either draggable or a target outline.
+         * @param {Object} shape The shape object from the `shapes` array.
+         * @param {boolean} isDraggable True if creating a draggable shape, false for a target area.
+         * @returns {HTMLDivElement} The created div element.
+         */
+        function createShapeElement(shape, isDraggable = true) {
+            const div = document.createElement('div');
+            div.dataset.shapeName = shape.name;
+
+            if (isDraggable) {
+                div.classList.add('draggable-shape', `shape-${shape.class}`);
+                div.setAttribute('draggable', true);
+                // Apply color directly for solid shapes, border-bottom-color for triangles
+                if (shape.name === 'Triangle') {
+                    div.style.borderBottomColor = shape.color;
+                } else {
+                    div.style.backgroundColor = shape.color;
+                }
+            } else { // It's a target outline
+                div.classList.add('target-area', `outline-${shape.class}`);
+            }
+            return div;
+        }
+
+        /**
+         * Displays feedback messages to the user.
+         * @param {string} message The message to display.
+         * @param {boolean} isFinal True if this is the final success message (e.g., end of game with button).
+         * @param {boolean} isError True if the message indicates an error.
+         */
+        function showFeedback(message, isFinal = false, isError = false) {
+            feedbackMessage.textContent = message;
+            feedbackMessage.classList.remove('correct', 'incorrect');
+            feedbackMessage.classList.add('show'); // Make visible
+            feedbackMessage.style.display = 'block'; // Ensure it's not hidden by display:none
+
+            if (isFinal) {
+                feedbackMessage.classList.add('correct');
+            } else if (isError) {
+                feedbackMessage.classList.add('incorrect');
+            } else {
+                feedbackMessage.classList.add('correct'); // Default for successful single match
+            }
+
+            if (!isFinal) { // Hide non-final messages after a delay
+                setTimeout(() => {
+                    feedbackMessage.classList.remove('show');
+                    feedbackMessage.style.display = 'none';
+                }, 1500);
+            }
+        }
+
+        /**
+         * Initializes or resets the game board for a new game.
+         */
+        function initializeGame() {
+            // Clear containers
+            draggableShapesContainer.innerHTML = '';
+            targetAreasContainer.innerHTML = '';
+            feedbackMessage.style.display = 'none';
+            feedbackMessage.classList.remove('show', 'correct', 'incorrect'); // Ensure clean state
+            actionButton.style.display = 'none'; // Hide button initially
+            matchedCount = 0; // Reset matched count for the new game
+
+            // Shuffle shapes for both draggable elements and target areas independently
+            let shuffledDraggableShapes = shuffleArray([...shapes]);
+            let shuffledTargetShapes = shuffleArray([...shapes]);
+
+            // Create and append draggable shapes
+            shuffledDraggableShapes.forEach(shape => {
+                const draggable = createShapeElement(shape, true);
+                draggableShapesContainer.appendChild(draggable);
+            });
+
+            // Create and append target areas
+            shuffledTargetShapes.forEach(shape => {
+                const target = createShapeElement(shape, false);
+                targetAreasContainer.appendChild(target);
+            });
+
+            addDragAndDropListeners();
+        }
+
+        /**
+         * Starts a brand new game.
+         */
+        function startGame() {
+            initializeGame(); // Initialize board for the new game
+        }
+
+        function addDragAndDropListeners() {
+            const draggables = document.querySelectorAll('.draggable-shape');
+            const targetAreas = document.querySelectorAll('.target-area');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', (e) => {
+                    draggedItem = e.target;
+                    e.dataTransfer.setData('text/plain', e.target.dataset.shapeName);
+                    // Add a slight delay to apply 'dragging' class after the browser creates the drag image
+                    setTimeout(() => {
+                        e.target.classList.add('dragging');
+                    }, 0);
+                });
+
+                draggable.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                    draggedItem = null;
+                });
+            });
+
+            targetAreas.forEach(target => {
+                target.addEventListener('dragover', (e) => {
+                    e.preventDefault(); // Allow drop
+                    // Only show hover if the target is empty
+                    if (!target.hasChildNodes()) {
+                         target.classList.add('hovered');
+                    }
+                });
+
+                target.addEventListener('dragleave', () => {
+                    target.classList.remove('hovered');
+                });
+
+                target.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    target.classList.remove('hovered');
+
+                    const droppedShapeName = e.dataTransfer.getData('text/plain');
+                    const targetShapeName = target.dataset.shapeName;
+
+                    // Check if target is empty and if the shape matches
+                    if (!target.hasChildNodes() && droppedShapeName === targetShapeName) {
+                        if (draggedItem) { // Ensure draggedItem is not null
+                            target.appendChild(draggedItem);
+                            draggedItem.style.position = 'static';
+                            draggedItem.style.margin = 'auto';
+                            draggedItem.setAttribute('draggable', false); // Make non-draggable
+                            draggedItem.style.cursor = 'default';
+                            target.classList.add('matched'); // Add a class to indicate it's matched
+
+                            matchedCount++;
+                            if (matchedCount === shapes.length) {
+                                // All shapes for the current game are matched
+                                showFeedback(`அருமை! நீங்கள் எல்லா வடிவங்களையும் பொருத்திவிட்டீர்கள்!`, true); // True to keep message visible
+                                actionButton.textContent = 'மீண்டும் விளையாடு!';
+                                actionButton.onclick = startGame; // Set handler for new game
+                                actionButton.style.display = 'block';
+                            } else {
+                                showFeedback('சரியான பொருத்தம்!', false);
+                            }
+                        }
+                    } else if (target.hasChildNodes()) {
+                        // Feedback if target is already occupied
+                        showFeedback('இந்த இடம் ஏற்கனவே நிரப்பப்பட்டுள்ளது!', false, true);
+                    } else {
+                        // Feedback for incorrect match
+                        showFeedback('தவறான பொருத்தம்! மீண்டும் முயற்சிக்கவும்.', false, true);
+                    }
+                });
+            });
+        }
+
+        // --- Event Listeners ---
+        // Initial setup for the action button's click handler
+        actionButton.addEventListener('click', function() {
+            // This function's specific action (startGame) will be assigned dynamically
+            // based on the game state (end of game).
+        });
+
+        // Start the game when the page loads
+        document.addEventListener('DOMContentLoaded', startGame);
+    </script>
+</body>
+</html>

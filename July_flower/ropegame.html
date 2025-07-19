@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop Rope Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #e0f2f7; /* Light blue background */
+            overflow: hidden; /* Hide anything that goes outside the view */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.8em;
+            text-align: center;
+        }
+
+        .game-container {
+            position: relative;
+            width: 900px;
+            height: 450px;
+            background-color: #fff;
+            border: 5px solid #4CAF50; /* Green border for the game area */
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #8BC34A; /* Green ground */
+            border-top: 3px solid #689F38;
+        }
+
+        .rope-holder {
+            position: absolute;
+            width: 25px;
+            height: 220px;
+            background-color: #616161; /* Dark grey */
+            bottom: 60px; /* On top of the ground */
+            border-radius: 5px;
+            z-index: 10; /* Ensure holders are above characters when passing behind */
+        }
+
+        .rope-holder.left {
+            left: 80px;
+        }
+
+        .rope-holder.right {
+            right: 80px;
+        }
+
+        .rope {
+            position: absolute;
+            width: calc(100% - 200px);
+            height: 10px;
+            background-color: #FFEB3B; /* Yellow rope */
+            border-radius: 5px;
+            top: 200px; /* Height of the rope - characters will duck under this */
+            left: 100px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10; /* Ensure rope is above characters when standing, below when ducking */
+        }
+
+        .character {
+            position: absolute;
+            width: 100px;
+            height: 150px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center bottom;
+            bottom: 60px; /* Initial standing position on the ground */
+            cursor: grab; /* Indicates draggable */
+            transition: transform 0.1s ease-out; /* Smooth movement when dragging */
+            user-select: none; /* Prevent text selection during drag */
+            z-index: 1; /* Default z-index */
+        }
+
+        .character.dragging {
+            cursor: grabbing; /* Indicates being dragged */
+            z-index: 100; /* Bring to front when dragging */
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5); /* Highlight when dragging */
+        }
+
+        .character.boy {
+            left: 50px; /* Starting position */
+            background-image: url('boy.jpg');
+        }
+
+        .character.girl {
+            left: 750px; /* Starting position */
+            background-image: url('girl.jpg');
+        }
+
+        .character.ducking {
+            /* This class will be added/removed by JS when under the rope */
+            transform: scaleY(0.7) translateY(40px); /* Duck down, adjust translateY to keep feet on ground */
+            z-index: 5; /* Make them appear 'under' the rope */
+        }
+
+        .message-box {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            color: #0c5460;
+            font-size: 1.2em;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s ease;
+            margin: 0 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Drag the Children Under the Rope!</h1>
+
+    <div class="game-container" id="gameContainer">
+        <div class="ground"></div>
+        <div class="rope-holder left"></div>
+        <div class="rope-holder right"></div>
+        <div class="rope" id="rope"></div>
+
+        <div class="character boy" id="boy"></div>
+        <div class="character girl" id="girl"></div>
+    </div>
+
+    <div class="message-box" id="messageBox">Drag the characters to make them cross!</div>
+
+    <div class="controls">
+        <button onclick="resetGame()">Reset Game</button>
+    </div>
+
+    <script>
+        const boy = document.getElementById('boy');
+        const girl = document.getElementById('girl');
+        const gameContainer = document.getElementById('gameContainer');
+        const rope = document.getElementById('rope');
+        const messageBox = document.getElementById('messageBox');
+
+        let activeCharacter = null;
+        let offsetX, offsetY;
+        let ropeTopY; // Y position of the top of the rope
+        let ropeLeftX, ropeRightX; // X bounds of the rope
+
+        // --- Initialization ---
+        function initializeGame() {
+            // Get rope's absolute position for collision detection
+            const gameRect = gameContainer.getBoundingClientRect();
+            const ropeRect = rope.getBoundingClientRect();
+
+            ropeTopY = ropeRect.top - gameRect.top; // Relative to game container's top
+            ropeLeftX = ropeRect.left - gameRect.left; // Relative to game container's left
+            ropeRightX = ropeRect.right - gameRect.left; // Relative to game container's left
+        }
+
+        // --- Dragging Functions ---
+        function dragStart(e) {
+            activeCharacter = e.target;
+            activeCharacter.classList.add('dragging');
+
+            // Get initial mouse position relative to the character
+            const charRect = activeCharacter.getBoundingClientRect();
+            offsetX = e.clientX - charRect.left;
+            offsetY = e.clientY - charRect.top;
+
+            // Add event listeners for dragging
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('mouseup', dragEnd);
+            document.addEventListener('touchmove', dragMove, { passive: false }); // For touch screens
+            document.addEventListener('touchend', dragEnd);
+        }
+
+        function dragMove(e) {
+            if (!activeCharacter) return;
+
+            e.preventDefault(); // Prevent default touch actions like scrolling
+
+            let clientX, clientY;
+            if (e.type.includes('touch')) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const gameRect = gameContainer.getBoundingClientRect();
+
+            // Calculate new position relative to the game container
+            let newX = clientX - gameRect.left - offsetX;
+            let newY = clientY - gameRect.top - offsetY;
+
+            // Clamp X position to stay within game container horizontally
+            newX = Math.max(0, Math.min(newX, gameRect.width - activeCharacter.offsetWidth));
+            // Clamp Y position to stay within game container vertically (adjusted for ground)
+            const maxBottom = gameRect.height - activeCharacter.offsetHeight - 60; // 60px for ground
+            newY = Math.max(0, Math.min(newY, maxBottom));
+
+            activeCharacter.style.left = `${newX}px`;
+            activeCharacter.style.top = `${newY}px`; // Use top for vertical positioning during drag
+
+            checkRopeCollision(activeCharacter);
+        }
+
+        function dragEnd() {
+            if (!activeCharacter) return;
+
+            activeCharacter.classList.remove('dragging');
+            // Revert to bottom positioning for standing
+            activeCharacter.style.bottom = `60px`; // Snap back to ground level
+            activeCharacter.style.top = ''; // Remove top style to let bottom take over
+
+            checkRopeCollision(activeCharacter, true); // Final check on drop
+
+            activeCharacter = null;
+            document.removeEventListener('mousemove', dragMove);
+            document.removeEventListener('mouseup', dragEnd);
+            document.removeEventListener('touchmove', dragMove);
+            document.removeEventListener('touchend', dragEnd);
+        }
+
+        // --- Collision and Game Logic ---
+        function checkRopeCollision(character, onDrop = false) {
+            const charRect = character.getBoundingClientRect();
+            const gameRect = gameContainer.getBoundingClientRect();
+
+            // Character's position relative to game container
+            const charLeft = charRect.left - gameRect.left;
+            const charRight = charRect.right - gameRect.left;
+            const charTop = charRect.top - gameRect.top;
+            const charBottom = charRect.bottom - gameRect.top;
+
+            // Check if character's horizontal center is within rope's horizontal bounds
+            const charCenterX = charLeft + (character.offsetWidth / 2);
+            const isHorizontallyUnderRope = charCenterX > ropeLeftX && charCenterX < ropeRightX;
+
+            // Check if character's head is below rope's top, meaning they are "under"
+            const isVerticallyUnderRope = charTop + (character.offsetHeight * 0.5) > ropeTopY; // Check if roughly halfway down character is below rope
+
+            if (isHorizontallyUnderRope && isVerticallyUnderRope) {
+                // Character is under the rope
+                if (!character.classList.contains('ducking')) {
+                    character.classList.add('ducking');
+                    if (onDrop) {
+                        displayMessage(`${character.id === 'boy' ? 'Boy' : 'Girl'} successfully crossed!`, 'success');
+                    }
+                }
+            } else {
+                // Character is not under the rope or has moved out
+                if (character.classList.contains('ducking')) {
+                    character.classList.remove('ducking');
+                }
+            }
+        }
+
+        function displayMessage(msg, type = 'info') {
+            messageBox.textContent = msg;
+            messageBox.classList.remove('success-message');
+            if (type === 'success') {
+                messageBox.classList.add('success-message');
+            }
+        }
+
+        function resetGame() {
+            boy.style.left = `50px`;
+            boy.style.top = ''; // Clear top style
+            boy.style.bottom = `60px`;
+            boy.classList.remove('ducking');
+            boy.classList.remove('dragging'); // Ensure no dragging state remains
+
+            girl.style.left = `750px`;
+            girl.style.top = ''; // Clear top style
+            girl.style.bottom = `60px`;
+            girl.classList.remove('ducking');
+            girl.classList.remove('dragging'); // Ensure no dragging state remains
+
+            displayMessage('Drag the characters to make them cross!');
+            initializeGame(); // Re-calculate rope position on reset
+        }
+
+        // --- Event Listeners ---
+        boy.addEventListener('mousedown', dragStart);
+        girl.addEventListener('mousedown', dragStart);
+
+        boy.addEventListener('touchstart', dragStart, { passive: false });
+        girl.addEventListener('touchstart', dragStart, { passive: false });
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            resetGame();
+            window.addEventListener('resize', initializeGame); // Recalculate on resize
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>உயரமானதா அல்லது குட்டையானதா?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff; /* Light blue background */
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .image-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end; /* Align images at the bottom */
+            margin-bottom: 30px;
+            gap: 20px; /* Space between images */
+        }
+        .image-container img {
+            max-width: 45%; /* Adjust as needed */
+            height: auto;
+            border: 5px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .image-container img:hover {
+            transform: scale(1.05);
+            border-color: #ffd700; /* Gold color on hover */
+        }
+        .question {
+            font-size: 2em;
+            color: #0056b3;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .feedback {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .correct {
+            color: green;
+        }
+        .wrong {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>உயரமான மற்றும் குட்டையான விலங்குகள்</h1>
+        
+        <div class="question">
+            <p>உயரமான விலங்கு எது? அதை சொடுக்கவும்.</p>
+        </div>
+
+        <div class="image-container">
+            <img id="giraffe" src="YOUR_GIRAFFE_IMAGE_URL_HERE" alt="ஒட்டகச்சிவிங்கி - உயரமானது" onclick="checkAnswer('giraffe')">
+            <img id="rabbit" src="YOUR_RABBIT_IMAGE_URL_HERE" alt="முயல் - குட்டையானது" onclick="checkAnswer('rabbit')">
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <script>
+        function checkAnswer(animal) {
+            const feedbackDiv = document.getElementById('feedback');
+            if (animal === 'giraffe') {
+                feedbackDiv.textContent = 'சரியான பதில்! ஒட்டகச்சிவிங்கி உயரமானது.';
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                feedbackDiv.textContent = 'தவறான பதில். மீண்டும் முயற்சி செய்யவும்.';
+                feedbackDiv.className = 'feedback wrong';
+            }
+        }
+    </script>
+
+</body>
+</html>

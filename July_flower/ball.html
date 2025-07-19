@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball Position Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbars if elements are slightly off-screen */
+        }
+        .game-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #333;
+        }
+        #instruction {
+            font-size: 1.3em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .scene-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px; /* Max width for the scene */
+            height: 300px; /* Adjust height as needed for your images */
+            margin: 20px auto;
+            border: 2px solid #ddd;
+            background-color: #e0e0e0;
+            overflow: hidden; /* Keep elements within bounds */
+        }
+        .table-img {
+            position: absolute;
+            bottom: 0; /* Align table to the bottom of the scene container */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%; /* Adjust table width relative to container */
+            max-width: 450px; /* Max width for the table image */
+            height: auto;
+            z-index: 2; /* Table is above the ball when ball is under */
+        }
+        .ball-img {
+            position: absolute;
+            width: 80px; /* Size of the ball */
+            height: 80px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: all 0.7s ease-in-out; /* Smooth transition for movement */
+        }
+
+        .ball-img.on-top {
+            /* Position the ball clearly on top of the table */
+            bottom: calc(100% - 100px); /* Adjust based on table image height and desired ball top position */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3; /* Ball on top, so higher z-index than table */
+            background-image: url('ball.png');
+        }
+
+        .ball-img.under {
+            /* Position the ball clearly under the table */
+            bottom: 20px; /* Adjust to be below the table legs */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1; /* Ball under, so lower z-index than table */
+            background-image: url('ball.png');
+        }
+
+        .buttons button {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #4CAF50; /* Green for interaction */
+            color: white;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .buttons button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+        .buttons button:active {
+            transform: translateY(0);
+        }
+        .buttons button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #message {
+            margin-top: 25px;
+            font-size: 1.4em;
+            font-weight: bold;
+            min-height: 1.5em; /* Prevent layout shift when text appears */
+        }
+        #nextRoundBtn {
+            padding: 10px 20px;
+            font-size: 1.1em;
+            background-color: #007BFF; /* Blue for next round */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+        #nextRoundBtn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Where is the Ball?</h1>
+        <p id="instruction">Look carefully! Is the ball ON TOP or UNDER the table?</p>
+
+        <div class="scene-container">
+            <img src="table.png" alt="Table" class="table-img" id="tableImage">
+            <div id="ball" class="ball-img"></div>
+        </div>
+
+        <div class="buttons">
+            <button id="onTopBtn">ON TOP</button>
+            <button id="underBtn">UNDER</button>
+        </div>
+
+        <p id="message"></p>
+        <button id="nextRoundBtn" style="display: none;">Next Round</button>
+    </div>
+
+    <script>
+        const ball = document.getElementById('ball');
+        const tableImg = document.getElementById('tableImage');
+        const instruction = document.getElementById('instruction');
+        const message = document.getElementById('message');
+        const onTopBtn = document.getElementById('onTopBtn');
+        const underBtn = document.getElementById('underBtn');
+        const nextRoundBtn = document.getElementById('nextRoundBtn');
+
+        let currentPosition; // 'on-top' or 'under'
+
+        function getRandomPosition() {
+            return Math.random() < 0.5 ? 'on-top' : 'under';
+        }
+
+        function setBallPosition(position) {
+            // Remove previous classes and add the new one
+            ball.classList.remove('on-top', 'under');
+            ball.classList.add(position);
+            currentPosition = position;
+        }
+
+        function startGame() {
+            message.textContent = '';
+            message.style.color = 'inherit'; // Reset message color
+            nextRoundBtn.style.display = 'none';
+            onTopBtn.disabled = false;
+            underBtn.disabled = false;
+
+            const initialPosition = getRandomPosition();
+            setBallPosition(initialPosition);
+            instruction.textContent = 'Look carefully! Is the ball ON TOP or UNDER the table?';
+        }
+
+        function checkAnswer(chosenPosition) {
+            onTopBtn.disabled = true;
+            underBtn.disabled = true;
+            if (chosenPosition === currentPosition) {
+                message.textContent = 'Correct! Great job!';
+                message.style.color = 'green';
+            } else {
+                message.textContent = 'Oops! Not quite. The ball is ' + (currentPosition === 'on-top' ? 'ON TOP' : 'UNDER') + ' the table.';
+                message.style.color = 'red';
+            }
+            nextRoundBtn.style.display = 'block';
+        }
+
+        onTopBtn.addEventListener('click', () => checkAnswer('on-top'));
+        underBtn.addEventListener('click', () => checkAnswer('under'));
+        nextRoundBtn.addEventListener('click', startGame);
+
+        // Start the first game when the page loads
+        startGame();
+    </script>
+</body>
+</html>

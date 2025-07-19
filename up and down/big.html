@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>பெரியதா அல்லது சிறியதா?</title> <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f7e0fa; /* Light purple background */
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+        .game-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 760px; /* Wider to accommodate both images side-by-side effectively */
+            box-sizing: border-box;
+            border: 5px solid #d9a7d9; /* Friendly border color */
+        }
+        h1 {
+            color: #8E24AA; /* Purple heading */
+            font-size: 2.8em; /* Slightly larger heading */
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        #instruction {
+            font-size: 1.8em; /* Larger instruction text */
+            color: #424242;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .image-selection-container {
+            display: flex;
+            justify-content: space-around; /* Distribute space evenly */
+            align-items: center; /* Align items vertically in the middle */
+            gap: 20px; /* Space between images */
+            margin: 25px auto;
+            max-width: 700px; /* Max width for the image grouping */
+        }
+        .image-wrapper {
+            border: 3px dashed #9e9e9e;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            position: relative; /* For overlay */
+            background-color: #e0f7fa; /* Background for wrappers, helpful for debugging if image is missing */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; /* To center image vertically if it doesn't fill wrapper */
+            padding: 10px; /* Padding inside the wrapper */
+            min-height: 200px; /* Ensures wrappers have some height */
+            flex: 1; /* Allow wrappers to take equal space */
+            box-sizing: border-box; /* Include padding/border in total width */
+        }
+        .image-wrapper:hover {
+            transform: translateY(-5px);
+            border-color: #8E24AA;
+        }
+        .concept-img {
+            max-width: 100%;
+            max-height: 200px; /* Constrain image height */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Remove extra space below image */
+        }
+
+        /* Adjustments for specific image sizes to make them visually distinct but fit */
+        #bigObjectImage {
+            /* The elephant image is usually large, ensure it scales down */
+            max-width: 95%; /* Adjusted slightly */
+            height: auto;
+        }
+        #smallObjectImage {
+            /* The mouse image is likely smaller, ensure it's visible */
+            max-width: 80%; /* Adjusted to give it more presence */
+            height: auto;
+        }
+
+        /* Overlay for correct/incorrect feedback */
+        .image-wrapper.correct-selection::after,
+        .image-wrapper.incorrect-selection::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 10px;
+            border: 8px solid; /* Thicker border for feedback */
+            pointer-events: none; /* Allows clicks to pass through */
+        }
+        .image-wrapper.correct-selection::after {
+            border-color: #4CAF50; /* Green for correct */
+        }
+        .image-wrapper.incorrect-selection::after {
+            border-color: #D32F2F; /* Red for incorrect */
+        }
+
+        #message {
+            margin-top: 30px;
+            font-size: 1.8em; /* Larger message text */
+            font-weight: bold;
+            min-height: 2em; /* Ensure consistent height for message area */
+            color: #673AB7; /* Deep purple for messages */
+        }
+        #message.correct {
+            color: #4CAF50; /* Green for correct message */
+        }
+        #message.incorrect {
+            color: #D32F2F; /* Red for incorrect message */
+        }
+
+        #nextRoundBtn {
+            padding: 15px 30px; /* Larger next round button */
+            font-size: 1.5em;
+            background-color: #2196F3; /* Blue for next round */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #nextRoundBtn:hover {
+            background-color: #1976D2;
+            transform: translateY(-2px);
+        }
+        #nextRoundBtn:active {
+            transform: translateY(0);
+        }
+
+        /* Media Queries for enhanced responsiveness on very small screens */
+        @media (max-width: 600px) {
+            .image-selection-container {
+                flex-direction: column; /* Stack images vertically on small screens */
+                gap: 15px;
+            }
+            .image-wrapper {
+                width: 90%; /* Use more width when stacked */
+                margin: 0 auto; /* Center when stacked */
+            }
+            h1 {
+                font-size: 2.2em;
+            }
+            #instruction {
+                font-size: 1.5em;
+            }
+            .concept-img {
+                 max-height: 180px;
+            }
+            #message {
+                font-size: 1.5em;
+            }
+            #nextRoundBtn {
+                font-size: 1.3em;
+                padding: 12px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>பெரியதா அல்லது சிறியதா?</h1> <p id="instruction"></p>
+
+        <div class="image-selection-container">
+            <div class="image-wrapper" id="bigObjectWrapper" data-size="big">
+                <img id="bigObjectImage" class="concept-img" src="elephant.jpg" alt="பெரிய பொருள்" onerror="console.error('Error loading elephant.jpg. Check file path and name.');"> </div>
+            <div class="image-wrapper" id="smallObjectWrapper" data-size="small">
+                <img id="smallObjectImage" class="concept-img" src="small.png" alt="சிறிய பொருள்" onerror="console.error('Error loading small.png. Check file path and name.');"> </div>
+        </div>
+
+        <p id="message"></p>
+        <button id="nextRoundBtn" style="display: none;">அடுத்த சுற்று</button> </div>
+
+    <script>
+        const instruction = document.getElementById('instruction');
+        const message = document.getElementById('message');
+        const bigObjectWrapper = document.getElementById('bigObjectWrapper');
+        const smallObjectWrapper = document.getElementById('smallObjectWrapper');
+        const nextRoundBtn = document.getElementById('nextRoundBtn');
+
+        const concepts = ['big', 'small'];
+        let currentQuestionType; // 'big' or 'small'
+
+        /**
+         * Sets up a new round by determining the question and enabling clicks.
+         */
+        function startGame() {
+            message.textContent = '';
+            message.className = '';
+            nextRoundBtn.style.display = 'none';
+
+            // Remove any previous feedback classes
+            bigObjectWrapper.classList.remove('correct-selection', 'incorrect-selection');
+            smallObjectWrapper.classList.remove('correct-selection', 'incorrect-selection');
+
+            // Enable clicks on images
+            bigObjectWrapper.style.pointerEvents = 'auto';
+            smallObjectWrapper.style.pointerEvents = 'auto';
+
+            // Randomly choose whether to ask for "big" or "small"
+            currentQuestionType = concepts[Math.floor(Math.random() * concepts.length)];
+
+            if (currentQuestionType === 'big') {
+                instruction.textContent = 'கவனமாகப் பாருங்கள்! எது பெரியது?'; // Look carefully! Which is BIG?
+            } else {
+                instruction.textContent = 'கவனமாகப் பாருங்கள்! எது சிறியது?'; // Look carefully! Which is SMALL?
+            }
+        }
+
+        /**
+         * Checks if the clicked image is the correct answer.
+         * @param {Event} event - The click event object.
+         */
+        function checkAnswer(event) {
+            const clickedWrapper = event.currentTarget;
+            const clickedSize = clickedWrapper.dataset.size;
+
+            // Disable further clicks
+            bigObjectWrapper.style.pointerEvents = 'none';
+            smallObjectWrapper.style.pointerEvents = 'none';
+
+            if (clickedSize === currentQuestionType) {
+                message.textContent = 'சரியானது! அருமையான வேலை!'; // Correct! Great job!
+                message.classList.add('correct');
+                clickedWrapper.classList.add('correct-selection');
+            } else {
+                message.textContent = 'ஐயோ! சரியாக இல்லை.'; // Oops! Not quite.
+
+                // Show correct answer by highlighting it
+                if (currentQuestionType === 'big') {
+                    bigObjectWrapper.classList.add('correct-selection');
+                } else {
+                    smallObjectWrapper.classList.add('correct-selection');
+                }
+                clickedWrapper.classList.add('incorrect-selection'); // Highlight the incorrect choice
+                message.classList.add('incorrect');
+            }
+            nextRoundBtn.style.display = 'block';
+        }
+
+        // Add event listeners to the image wrappers
+        bigObjectWrapper.addEventListener('click', checkAnswer);
+        smallObjectWrapper.addEventListener('click', checkAnswer);
+        nextRoundBtn.addEventListener('click', startGame);
+
+        // Start the first game when the page loads
+        startGame();
+    </script>
+</body>
+</html>

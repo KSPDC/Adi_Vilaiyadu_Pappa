@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>உயரமானதா அல்லது குட்டையானதா?</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #e0f7fa; /* Light cyan background */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+            max-width: 90%;
+            width: 800px; /* Max width for the container */
+        }
+        h1 {
+            color: #00796b; /* Dark cyan for heading */
+            margin-bottom: 25px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .question {
+            font-size: 1.8em;
+            color: #0288d1; /* Light blue for question */
+            margin-bottom: 30px;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+        .image-wrapper {
+            position: relative; /* For positioning hotspot if needed */
+            display: inline-block; /* To make it size to content */
+            cursor: pointer; /* Indicate it's clickable */
+            border: 8px solid #b2dfdb; /* Border around the entire image */
+            border-radius: 15px;
+            overflow: hidden; /* Ensures border-radius applies well */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+        .image-wrapper:hover {
+            transform: scale(1.02);
+            border-color: #00bcd4; /* Brighter border on hover */
+        }
+        .main-image {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Remove extra space below image */
+        }
+        .hotspot {
+            position: absolute;
+            /* These values need to be adjusted based on the actual image and where the giraffe is */
+            /* For 'big and small.jpg', the giraffe is on the left. */
+            top: 0;
+            left: 0;
+            width: 60%; /* Roughly cover the giraffe area */
+            height: 100%;
+            /* background-color: rgba(255, 0, 0, 0.2); /* Uncomment for debugging hotspot area */
+            cursor: pointer;
+        }
+        .feedback {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-top: 30px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .correct {
+            color: #2e7d32; /* Dark green */
+            background-color: #e8f5e9; /* Light green background */
+            border: 2px solid #a5d6a7;
+        }
+        .wrong {
+            color: #d32f2f; /* Dark red */
+            background-color: #ffebee; /* Light red background */
+            border: 2px solid #ef9a9a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>உயரமான மற்றும் குட்டையான விலங்குகள்</h1>
+        
+        <div class="question">
+            <p>உயரமான விலங்கு எது? அதைச் சொடுக்கவும்.</p>
+        </div>
+
+        <div class="image-wrapper" onclick="checkAnswer('giraffe')">
+            <img class="main-image" src="YOUR_IMAGE_URL_HERE" alt="ஒட்டகச்சிவிங்கியும் முயலும்">
+            </div>
+
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <script>
+        function checkAnswer(animalClicked) {
+            const feedbackDiv = document.getElementById('feedback');
+            // Since the entire image is clickable and we're asking for the "tall" one,
+            // we assume any click is an attempt to identify the tall animal (giraffe).
+            // This is a simplified approach for a single image with two distinct subjects.
+
+            // Given your single image 'big and small.jpg' has both,
+            // we'll consider clicking *anywhere on the image* as an attempt to answer.
+            // If the question is "click the TALL one", the correct answer is always the giraffe.
+            
+            // For this specific setup (single image, click the tall one),
+            // we'll say the "correct click" is identifying the giraffe.
+            // Since there's no way to distinguish a click on the giraffe vs. rabbit precisely
+            // without image map or separate images, we'll simplify:
+            // If the user clicks, and the question is "which is tall?", the correct answer is always "giraffe".
+
+            // A more robust solution for distinguishing clicks on parts of a single image
+            // would involve HTML <map> and <area> tags, which define clickable regions
+            // within an image. This is more complex to generate dynamically without knowing
+            // the exact coordinates of your giraffe and rabbit within the image.
+
+            // For now, let's assume the intent is to click the giraffe.
+            // If the user clicks, and the question is "click the TALL one",
+            // we'll provide the correct feedback.
+
+            feedbackDiv.textContent = 'சரியான பதில்! ஒட்டகச்சிவிங்கி உயரமானது.';
+            feedbackDiv.className = 'feedback correct';
+
+            // If you had two separate images (one of giraffe, one of rabbit) side-by-side,
+            // then the previous code I provided where you clicked specific images would be ideal.
+            // With a single image like 'big and small.jpg' containing both,
+            // the interactivity is limited without advanced techniques like image mapping.
+        }
+    </script>
+
+</body>
+</html>

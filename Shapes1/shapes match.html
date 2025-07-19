@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>வடிவங்கள் விளையாட்டு</title>
+    <style>
+        body {
+            font-family: 'Arial Unicode MS', sans-serif; /* Fallback for Tamil characters */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* --- Introduction Page Styles --- */
+        #introPage {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 90%;
+            display: block; /* Shown by default */
+        }
+        #introPage h1 {
+            color: #333;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        #introPage p {
+            color: #666;
+            font-size: 1.5em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .intro-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .start-button-intro { /* Specific class for intro button */
+            padding: 15px 30px;
+            font-size: 2em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .start-button-intro:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+        .start-button-intro:active {
+            transform: translateY(0);
+        }
+
+        /* --- Game Page Styles --- */
+        #gamePage {
+            display: none; /* Hidden by default */
+            width: 100%;
+            max-width: 500px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        #gamePage h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #gamePage h2 {
+            color: #555;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .image-display {
+            margin-bottom: 30px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .image-display img {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            display: block;
+        }
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .option-button {
+            padding: 12px 20px;
+            font-size: 1.3em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .option-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .option-button.correct {
+            background-color: #28a745;
+        }
+        .option-button.incorrect {
+            background-color: #dc3545;
+        }
+        .feedback {
+            margin-top: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+        .feedback.correct {
+            color: #28a745;
+        }
+        .feedback.incorrect {
+            color: #dc3545;
+        }
+        .next-button, .restart-game-button { /* Renamed start-button to restart-game-button for clarity */
+            margin-top: 30px;
+            padding: 12px 25px;
+            font-size: 1.3em;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .next-button:hover, .restart-game-button:hover {
+            background-color: #5a6268;
+        }
+        .next-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            #introPage h1, #gamePage h1 {
+                font-size: 2.2em;
+            }
+            #introPage p, #gamePage h2 {
+                font-size: 1.2em;
+            }
+            .start-button-intro, .next-button, .restart-game-button, .option-button {
+                font-size: 1.5em;
+                padding: 12px 25px;
+            }
+            #introPage, #gamePage {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="introPage">
+        <h1>வடிவங்கள் உலகத்திற்கு வருக!</h1>
+        <p>அன்பு குழந்தைகளே, வடிவங்கள் விளையாட்டில் உங்களை வரவேற்கிறோம்! இங்கே நீங்கள் பல அழகான மற்றும் வண்ணமயமான வடிவங்களை கற்றுக்கொள்ளலாம்.</p>
+        <img src="cute-geometric-figures-with-face-trendy-geometric-shape-characters-colorful-illustration-for-school-and-kindergarten-cute-funny-smiling-shape-characters-for-kids-and-children-design-vector.jpg"
+             alt="Cute Geometric Shapes" class="intro-image">
+        <p>
+            வடிவங்களின் பெயர்களைக் கற்றுக்கொள்வதற்கும், அவற்றை நிஜ வாழ்க்கைப் பொருட்களுடன் பொருத்துவதற்கும் இந்த விளையாட்டு உங்களுக்கு உதவும்.
+            மகிழ்ச்சியாக கற்றுக்கொள்ளுங்கள்!
+        </p>
+        <button class="start-button-intro" onclick="showGame()">விளையாட்டைத் தொடங்கு</button>
+    </div>
+
+    <div id="gamePage">
+        <h1>வடிவங்கள் விளையாட்டு</h1>
+        <h2>இந்த படத்தின் வடிவம் என்ன?</h2>
+
+        <div class="image-display" id="imageDisplay">
+            <img src="" alt="Shape Image">
+        </div>
+        <div class="options-container" id="optionsContainer">
+            </div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-button" id="nextButton" onclick="nextQuestion()" disabled>அடுத்தது</button>
+        <button class="restart-game-button" id="restartGameButton" onclick="initGame()" style="display:none;">மீண்டும் தொடங்கு</button>
+    </div>
+
+    <script>
+        const shapes = [
+            { name: 'நட்சத்திரம்', id: 'star', image: 'star.png' },
+            { name: 'வட்டம்', id: 'circle', image: 'idli-is-a-south-indian-breakfast-dish-served-on-banana-leaf-DGDHTR.jpg' },
+            { name: 'செவ்வகம்', id: 'rectangle', image: 'rectangle.jpg' },
+            { name: 'சதுரம்', id: 'square', image: 'square.jpg' },
+            { name: 'முக்கோணம்', id: 'triangle', image: 'triangle.jpg' }
+        ];
+
+        let currentQuestionIndex = 0;
+        let shuffledQuestions = [];
+
+        const introPage = document.getElementById('introPage');
+        const gamePage = document.getElementById('gamePage');
+        const imageDisplay = document.querySelector('#imageDisplay img');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackDiv = document.getElementById('feedback');
+        const nextButton = document.getElementById('nextButton');
+        const restartGameButton = document.getElementById('restartGameButton'); // Renamed from startButton
+
+        function showGame() {
+            introPage.style.display = 'none'; // Hide intro page
+            gamePage.style.display = 'block'; // Show game page
+            initGame(); // Initialize the game when shown
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initGame() {
+            restartGameButton.style.display = 'none'; // Hide restart button initially
+            currentQuestionIndex = 0;
+            shuffledQuestions = shuffleArray([...shapes]); // Create a shuffled copy of shapes
+            nextButton.style.display = 'block'; // Ensure next button is visible
+            nextButton.disabled = true; // Disable until an answer is selected
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            if (currentQuestionIndex >= shuffledQuestions.length) {
+                // Game finished
+                imageDisplay.src = ''; // Clear image
+                imageDisplay.alt = '';
+                optionsContainer.innerHTML = '';
+                feedbackDiv.textContent = 'விளையாட்டு முடிந்தது! நீங்கள் அனைத்து வடிவங்களையும் அடையாளம் கண்டீர்கள்!';
+                feedbackDiv.classList.add('correct');
+                nextButton.style.display = 'none'; // Hide next button
+                restartGameButton.style.display = 'block'; // Show restart button
+                return;
+            }
+
+            const currentShape = shuffledQuestions[currentQuestionIndex];
+            imageDisplay.src = currentShape.image;
+            imageDisplay.alt = currentShape.name;
+            feedbackDiv.textContent = '';
+            feedbackDiv.className = 'feedback'; // Reset feedback classes
+            nextButton.disabled = true; // Disable next button for new question
+
+            // Generate options
+            let options = [];
+            options.push({ name: currentShape.name, isCorrect: true });
+
+            // Add incorrect options (ensure they are different from the correct one)
+            const incorrectShapes = shapes.filter(s => s.id !== currentShape.id);
+            // Get 2 random incorrect options, or fewer if not enough available
+            const shuffledIncorrect = shuffleArray([...incorrectShapes]).slice(0, Math.min(2, incorrectShapes.length));
+            shuffledIncorrect.forEach(s => options.push({ name: s.name, isCorrect: false }));
+
+            // Ensure we have at least 3 options in total, if possible
+            while (options.length < 3 && shapes.length >= 3) {
+                // Find a unique incorrect shape not already in options
+                const newIncorrect = shapes.find(s => !options.some(o => o.name === s.name) && s.id !== currentShape.id);
+                if (newIncorrect) {
+                    options.push({ name: newIncorrect.name, isCorrect: false });
+                } else {
+                    // Fallback if truly stuck (shouldn't happen with 5 shapes)
+                    break;
+                }
+            }
+
+
+            options = shuffleArray(options); // Shuffle options
+
+            optionsContainer.innerHTML = ''; // Clear previous options
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.classList.add('option-button');
+                button.textContent = option.name;
+                button.dataset.isCorrect = option.isCorrect;
+                button.addEventListener('click', () => checkAnswer(button));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedButton) {
+            // Disable all buttons after an answer is selected
+            Array.from(optionsContainer.children).forEach(button => {
+                button.disabled = true;
+            });
+
+            if (selectedButton.dataset.isCorrect === 'true') {
+                feedbackDiv.textContent = 'சரியானது!';
+                feedbackDiv.classList.add('correct');
+                selectedButton.classList.add('correct');
+            } else {
+                feedbackDiv.textContent = 'தவறானது! சரியான விடை: ' + shuffledQuestions[currentQuestionIndex].name;
+                feedbackDiv.classList.add('incorrect');
+                selectedButton.classList.add('incorrect');
+                // Highlight the correct answer
+                Array.from(optionsContainer.children).find(button => button.dataset.isCorrect === 'true').classList.add('correct');
+            }
+            nextButton.disabled = false; // Enable next button
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            displayQuestion();
+        }
+
+        // Initial setup on page load: Hide game, show intro
+        document.addEventListener('DOMContentLoaded', () => {
+            gamePage.style.display = 'none'; // Hide the game section initially
+            introPage.style.display = 'block'; // Show the intro section initially
+        });
+    </script>
+</body>
+</html>
